@@ -1,12 +1,12 @@
-using BookstoreApi.Bookstore.Contracts;
-using BookstoreApi.Bookstore.Endpoints;
-using BookstoreApi.Data;
+using BookStore.Bookstore.Contracts;
+using BookStore.Bookstore.Endpoints;
 
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using BookStore.Data;
 
-namespace BookstoreApi.Properties.Endpoints;
+namespace BookStore.Endpoints.Books;
 
 public class CreateBookEndpoint(BookstoreDbContext dbContext) : CreateBookEndpointBase
 {

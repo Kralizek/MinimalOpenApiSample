@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BookstoreApi.Data;
+namespace BookStore.Data;
 
 public class BookstoreDbContext(DbContextOptions<BookstoreDbContext> options) : DbContext(options)
 {

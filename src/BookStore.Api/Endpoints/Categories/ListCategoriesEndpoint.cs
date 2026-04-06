@@ -1,9 +1,9 @@
-using BookstoreApi.Bookstore.Contracts;
-using BookstoreApi.Bookstore.Endpoints;
+using BookStore.Bookstore.Contracts;
+using BookStore.Bookstore.Endpoints;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace BookstoreApi.Endpoints;
+namespace BookStore.Endpoints.Categories;
 
 public class ListCategoriesEndpoint : ListCategoriesEndpointBase
 {
@@ -17,3 +17,4 @@ public class ListCategoriesEndpoint : ListCategoriesEndpointBase
         ]);
     }
 }
+

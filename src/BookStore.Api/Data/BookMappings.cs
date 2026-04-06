@@ -1,7 +1,7 @@
-using BookstoreApi.Bookstore.Contracts;
-using BookstoreApi.Bookstore.Endpoints;
+using BookStore.Bookstore.Contracts;
+using BookStore.Bookstore.Endpoints;
 
-namespace BookstoreApi.Data;
+namespace BookStore.Data;
 
 public static class BookMappings
 {
@@ -31,34 +31,6 @@ public static class BookMappings
         };
     }
 
-    public static void ApplyUpdate(this BookRecord target, UpdateBookByIdEndpointBase.Request request)
-    {
-        if (request.Title is not null)
-        {
-            target.Title = request.Title;
-        }
-
-        if (request.Author is not null)
-        {
-            target.Author = request.Author;
-        }
-
-        if (request.Price is not null)
-        {
-            target.Price = request.Price.Value;
-        }
-
-        if (request.Isbn is not null)
-        {
-            target.Isbn = request.Isbn;
-        }
-
-        if (request.Categories is not null)
-        {
-            target.Categories = SerializeCategories(request.Categories);
-        }
-    }
-
     public static string SerializeCategories(IReadOnlyList<Category>? categories)
     {
         if (categories is null || categories.Count == 0)
@@ -86,3 +58,4 @@ public static class BookMappings
             .ToArray();
     }
 }
+

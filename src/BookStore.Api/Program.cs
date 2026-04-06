@@ -1,4 +1,4 @@
-using BookstoreApi.Data;
+using BookStore.Data;
 
 using Microsoft.EntityFrameworkCore;
 

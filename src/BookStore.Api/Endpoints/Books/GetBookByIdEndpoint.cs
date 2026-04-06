@@ -1,12 +1,12 @@
-using BookstoreApi.Bookstore.Contracts;
-using BookstoreApi.Bookstore.Endpoints;
-using BookstoreApi.Data;
+using BookStore.Bookstore.Contracts;
+using BookStore.Bookstore.Endpoints;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
 using Microsoft.EntityFrameworkCore;
+using BookStore.Data;
 
-namespace BookstoreApi.Endpoints;
+namespace BookStore.Endpoints.Books;
 
 public class GetBookByIdEndpoint(BookstoreDbContext dbContext) : GetBookByIdEndpointBase
 {
@@ -24,3 +24,4 @@ public class GetBookByIdEndpoint(BookstoreDbContext dbContext) : GetBookByIdEndp
         return TypedResults.Ok(book.ToContract());
     }
 }
+

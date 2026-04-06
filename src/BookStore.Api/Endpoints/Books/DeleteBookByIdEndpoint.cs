@@ -1,11 +1,11 @@
-using BookstoreApi.Bookstore.Endpoints;
-using BookstoreApi.Data;
+using BookStore.Bookstore.Endpoints;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
 using Microsoft.EntityFrameworkCore;
+using BookStore.Data;
 
-namespace BookstoreApi.Endpoints;
+namespace BookStore.Endpoints.Books;
 
 public class DeleteBookByIdEndpoint(BookstoreDbContext dbContext) : DeleteBookByIdEndpointBase
 {
@@ -25,3 +25,4 @@ public class DeleteBookByIdEndpoint(BookstoreDbContext dbContext) : DeleteBookBy
         return TypedResults.NoContent();
     }
 }
+

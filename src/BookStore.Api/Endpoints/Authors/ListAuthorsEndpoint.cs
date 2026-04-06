@@ -1,11 +1,11 @@
-using BookstoreApi.Bookstore.Endpoints;
-using BookstoreApi.Data;
+using BookStore.Bookstore.Endpoints;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
 using Microsoft.EntityFrameworkCore;
+using BookStore.Data;
 
-namespace BookstoreApi.Endpoints;
+namespace BookStore.Endpoints.Authors;
 
 public class ListAuthorsEndpoint(BookstoreDbContext dbContext) : ListAuthorsEndpointBase
 {
@@ -22,3 +22,4 @@ public class ListAuthorsEndpoint(BookstoreDbContext dbContext) : ListAuthorsEndp
         return TypedResults.Ok(authors);
     }
 }
+
