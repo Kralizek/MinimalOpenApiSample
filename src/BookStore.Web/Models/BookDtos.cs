@@ -1,4 +1,18 @@
+using System.Text.Json.Serialization;
+
 namespace BookStore.Web.Models;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Category
+{
+    Fiction,
+
+    NonFiction,
+
+    SciFi,
+
+    Fantasy
+}
 
 public record BookDto(
     Guid Id,
@@ -6,7 +20,7 @@ public record BookDto(
     string Author,
     double Price,
     string? Isbn,
-    IReadOnlyList<string>? Categories);
+    IReadOnlyList<Category>? Categories);
 
 public class SearchBooksResponse
 {
@@ -25,5 +39,18 @@ public class CreateBookRequest
 
     public string? Isbn { get; set; }
 
-    public string[] Categories { get; set; } = [];
+    public Category[] Categories { get; set; } = [];
+}
+
+public class UpdateBookRequest
+{
+    public string? Title { get; set; }
+
+    public string? Author { get; set; }
+
+    public double? Price { get; set; }
+
+    public string? Isbn { get; set; }
+
+    public Category[]? Categories { get; set; }
 }
