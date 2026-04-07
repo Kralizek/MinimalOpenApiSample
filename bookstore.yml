@@ -41,6 +41,8 @@ paths:
   /books:
     get:
       operationId: searchBooks
+      tags:
+        - Books
       summary: Get a list of books
       parameters:
         - name: query
@@ -102,6 +104,8 @@ paths:
     post:
       summary: Create a new book
       operationId: createBook
+      tags:
+        - Books
       requestBody:
         content:
           application/json:
@@ -140,6 +144,8 @@ paths:
     get:
       summary: Get a book by ID
       operationId: getBookById
+      tags:
+        - Books
       parameters:
         - name: id
           in: path
@@ -159,6 +165,8 @@ paths:
     put:
       summary: Update a book by ID
       operationId: updateBookById
+      tags:
+        - Books
       parameters:
         - name: id
           in: path
@@ -202,6 +210,8 @@ paths:
     delete:
       summary: Delete a book by ID
       operationId: deleteBookById
+      tags:
+        - Books
       parameters:
         - name: id
           in: path
@@ -219,6 +229,8 @@ paths:
     get:
       summary: Get a list of book categories
       operationId: listCategories
+      tags:
+        - Categories
       responses:
         '200':
           content:
@@ -231,6 +243,8 @@ paths:
     get:
       summary: Get a list of authors
       operationId: listAuthors
+      tags:
+        - Authors
       responses:
         '200':
           content:

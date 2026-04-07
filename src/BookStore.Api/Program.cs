@@ -22,10 +22,18 @@ using (var scope = app.Services.CreateScope())
 	dbContext.Database.EnsureCreated();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => Results.Redirect("/swagger/index.html", permanent: false));
 
 app.MapMinimalOpenApiEndpoints();
 
-app.MapOpenApiSchemas();
+var schemas = app.MapOpenApiSchemas();
+
+app.UseSwaggerUI(options =>
+{
+    foreach (var schema in schemas.Schemas)
+    {
+        options.SwaggerEndpoint(schema.PublicPath, schema.Name);
+    }
+});
 
 app.Run();
