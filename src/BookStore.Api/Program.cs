@@ -32,7 +32,7 @@ app.UseSwaggerUI(options =>
 {
     foreach (var schema in schemas.Schemas)
     {
-        options.SwaggerEndpoint(schema.PublicPath, schema.Name);
+        options.SwaggerEndpoint(schema.PublicPath, schema.FullName);
     }
 });
 

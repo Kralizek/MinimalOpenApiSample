@@ -10,12 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
-    <PackageReference Include="MinimalOpenAPI" Version="1.0.0-beta.7" />
+    <PackageReference Include="MinimalOpenAPI" Version="1.0.0-beta.8" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApi Include="../../bookstore.yml" Publish="true" PublishPathOverride="/schemas/openapi.yaml" />
+    <OpenApi Include="../../bookstore.yml" PublishAs="/schemas/openapi.yaml" DisplayName="BookStore API" DisplayVersion="1.0.0" />
   </ItemGroup>
 
 </Project>
