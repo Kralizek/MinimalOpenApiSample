@@ -1,10 +1,9 @@
 using BookStore.Bookstore.Contracts;
 using BookStore.Bookstore.Endpoints;
+using BookStore.Data;
 
 using Microsoft.AspNetCore.Http.HttpResults;
-
 using Microsoft.EntityFrameworkCore;
-using BookStore.Data;
 
 namespace BookStore.Endpoints.Books;
 
@@ -55,4 +54,3 @@ public class UpdateBookByIdEndpoint(BookstoreDbContext dbContext) : UpdateBookBy
         }
     }
 }
-

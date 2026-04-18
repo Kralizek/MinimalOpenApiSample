@@ -18,8 +18,8 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-	var dbContext = scope.ServiceProvider.GetRequiredService<BookstoreDbContext>();
-	dbContext.Database.EnsureCreated();
+    var dbContext = scope.ServiceProvider.GetRequiredService<BookstoreDbContext>();
+    dbContext.Database.EnsureCreated();
 }
 
 app.MapGet("/", () => Results.Redirect("/swagger/index.html", permanent: false));

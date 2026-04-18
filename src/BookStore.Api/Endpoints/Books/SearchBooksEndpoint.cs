@@ -1,9 +1,8 @@
 using BookStore.Bookstore.Endpoints;
-
-using Microsoft.EntityFrameworkCore;
+using BookStore.Data;
 
 using Microsoft.AspNetCore.Http.HttpResults;
-using BookStore.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Endpoints.Books;
 
@@ -54,4 +53,3 @@ public class SearchBooksEndpoint(BookstoreDbContext dbContext) : SearchBooksEndp
         });
     }
 }
-
