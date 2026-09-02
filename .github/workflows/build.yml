@@ -21,7 +21,7 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore MinimalOpenApiSample.slnx
+        run: dotnet restore MinimalOpenApiSample.slnx -warnaserror
 
       - name: Build
-        run: dotnet build MinimalOpenApiSample.slnx --configuration Release --no-restore
+        run: dotnet build MinimalOpenApiSample.slnx --configuration Release --no-restore -warnaserror
