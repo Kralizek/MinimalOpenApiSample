@@ -19,7 +19,7 @@ The intent is to keep hand-written code focused on business behavior while repet
 
 This sample currently uses:
 - `MinimalOpenAPI` version `1.0.0`
-- `.NET SDK` pinned via `global.json` to `10.0.201` (roll-forward: latest minor)
+- `.NET SDK` pinned via `global.json` to `10.0.400` (roll-forward: latest minor)
 
 ## Repository layout
 
