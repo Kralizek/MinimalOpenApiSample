@@ -18,7 +18,7 @@ The intent is to keep hand-written code focused on business behavior while repet
 ## Current package/version context
 
 This sample currently uses:
-- `MinimalOpenAPI` version `1.0.0-beta.8`
+- `MinimalOpenAPI` version `1.0.0`
 - `.NET SDK` pinned via `global.json` to `10.0.201` (roll-forward: latest minor)
 
 ## Repository layout
@@ -87,7 +87,7 @@ The database is created automatically at startup if it does not exist.
 Notes:
 
 - LinkedIn content may require sign-in to view.
-- The original blog post was written before this sample was updated to beta.8, so some APIs and wording in the post may be slightly behind the current sample.
+- The original blog post was written before this sample was updated to 1.0.0, so some APIs and wording in the post may be slightly behind the current sample.
 
 ## Is this always the right approach?
 
