@@ -19,7 +19,7 @@
       "title": "Make the contract an input",
       "file": "src/BookStore.Api/BookStore.Api.csproj",
       "pattern": "OpenApi Include=",
-      "description": "- `bookstore.yml` is included as an `<OpenApi>` item.\n- This is the important direction change: OpenAPI is an input to the build, not something produced from the running application.\n- The generator reads this authored document and creates the C# surface from it.\n- `PublishAs` will let us expose this same document later."
+      "description": "- `bookstore.yml` is included as an `<OpenApi>` item.\n- This is the important direction change: OpenAPI is an input to the build, not something produced from the running application.\n- The generator reads this authored document and creates the C# surface from it.\n- `<OpenApi>` also has a few useful knobs:\n  - `Namespace` overrides the generated document namespace.\n  - `ReadWriteSchemaHandling` controls whether request/response contract graphs are shared or split (`Ignore`, `Auto`, `Split`).\n  - `PublishAs` exposes the authored document at an exact HTTP path.\n  - `DisplayName` and `DisplayVersion` control the schema descriptor metadata, which is useful when wiring tools such as Swagger UI.\n- This sample uses `PublishAs`, `DisplayName`, and `DisplayVersion`; we will come back to `PublishAs` later when we expose the contract."
     },
     {
       "title": "A component schema",
