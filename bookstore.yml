@@ -1,8 +1,13 @@
-$schema: "https://spec.openapis.org/oas/3.1/schema/2022-10-07"
 openapi: 3.1.0
+servers:
+  - url: https://api.bookstore.test
 info:
   title: Bookstore API
   version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+security: []
 components:
   schemas:
     Book:
@@ -86,6 +91,7 @@ paths:
           description: Number of items per page
       responses:
         '200':
+          description: Books matching the supplied filters
           content:
             application/json:
               schema:
@@ -101,6 +107,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Book'
+        '400':
+          description: Invalid search or pagination parameters
     post:
       summary: Create a new book
       operationId: createBook
@@ -136,10 +144,13 @@ paths:
                     $ref: '#/components/schemas/Category'
       responses:
         '201':
+          description: Book created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Book'
+        '400':
+          description: Invalid book data
   /books/{id}:
     get:
       summary: Get a book by ID
@@ -156,6 +167,7 @@ paths:
           description: Unique identifier for the book
       responses:
         '200':
+          description: Book found
           content:
             application/json:
               schema:
@@ -201,6 +213,7 @@ paths:
                     $ref: '#/components/schemas/Category'
       responses:
         '200':
+          description: Book updated successfully
           content:
             application/json:
               schema:
@@ -233,12 +246,15 @@ paths:
         - Categories
       responses:
         '200':
+          description: Categories returned successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Category'
+        '400':
+          description: The request was invalid
   /authors:
     get:
       summary: Get a list of authors
@@ -247,9 +263,12 @@ paths:
         - Authors
       responses:
         '200':
+          description: Authors returned successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
+        '400':
+          description: The request was invalid
