@@ -7,13 +7,13 @@
   "steps": [
     {
       "title": "Demo route",
-      "description": "We will follow the same path as the talk: **authored OpenAPI → generated surface → handwritten behavior**. The repository is already complete; this is a guided tour, not live coding."
+      "description": "This is a prepared bookstore application, not a live-coding demo. We’ll follow the contract from the authored OpenAPI document, through the generated C# surface, to the handwritten endpoint behavior."
     },
     {
       "title": "Add MinimalOpenAPI",
       "file": "src/BookStore.Api/BookStore.Api.csproj",
       "pattern": "PackageReference Include=\"MinimalOpenAPI\"",
-      "description": "The API consumes **MinimalOpenAPI 1.0.0** as a normal package reference. The source generator runs as part of the build."
+      "description": "MinimalOpenAPI is just a package reference. Its source generator runs during the build, so there is no separate generation step to add to the workflow."
     },
     {
       "title": "Make the contract an input",
