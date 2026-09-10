@@ -1,0 +1,95 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Swenug demo — From OpenAPI to Minimal APIs",
+  "description": "Guided demo for the Swenug talk: authored OpenAPI, generated surface, handwritten behavior, and application wiring.",
+  "ref": "ac8328282731243c8204f13fdd3b0f2663837b49",
+  "isPrimary": true,
+  "steps": [
+    {
+      "title": "Demo route",
+      "description": "- This is a prepared bookstore application, not a live-coding demo.\n- We are following the contract through the application rather than building the project step by step.\n- The path is: authored OpenAPI → generated C# surface → handwritten endpoint behavior."
+    },
+    {
+      "title": "Add MinimalOpenAPI",
+      "file": "src/BookStore.Api/BookStore.Api.csproj",
+      "pattern": "PackageReference Include=\"MinimalOpenAPI\"",
+      "description": "- MinimalOpenAPI is added as a normal package reference.\n- Its source generator runs during the build.\n- There is no separate code-generation command or additional generation step in the workflow."
+    },
+    {
+      "title": "Make the contract an input",
+      "file": "src/BookStore.Api/BookStore.Api.csproj",
+      "pattern": "OpenApi Include=",
+      "description": "- `bookstore.yml` is included as an `<OpenApi>` item.\n- This is the important direction change: OpenAPI is an input to the build, not something produced from the running application.\n- The generator reads this authored document and creates the C# surface from it.\n- `<OpenApi>` also has a few useful knobs:\n  - `Namespace` overrides the generated document namespace.\n  - `ReadWriteSchemaHandling` controls whether request/response contract graphs are shared or split (`Ignore`, `Auto`, `Split`).\n  - `PublishAs` exposes the authored document at an exact HTTP path.\n  - `DisplayName` and `DisplayVersion` control the schema descriptor metadata, which is useful when wiring tools such as Swagger UI.\n- This sample uses `PublishAs`, `DisplayName`, and `DisplayVersion`; we will come back to `PublishAs` later when we expose the contract."
+    },
+    {
+      "title": "A component schema",
+      "file": "bookstore.yml",
+      "pattern": "Book:",
+      "description": "- Start with the reusable `Book` component schema.\n- This is a normal OpenAPI component, authored independently of the C# implementation.\n- MinimalOpenAPI generates the corresponding C# contract type from this shape.\n- The C# type follows the contract; it is not the thing defining the contract."
+    },
+    {
+      "title": "Simple GET contract",
+      "file": "bookstore.yml",
+      "pattern": "operationId: getBookById",
+      "description": "- `GET /books/{id}` is the simplest endpoint in the tour.\n- The contract defines a typed `id` path parameter, a `200` response using the `Book` component, and a `404` response.\n- The `operationId` gives this operation a stable identity that the generator can use for the endpoint surface.\n- All of those HTTP decisions exist before we write the endpoint behavior."
+    },
+    {
+      "title": "Simple GET behavior",
+      "file": "src/BookStore.Api/Endpoints/Books/GetBookByIdEndpoint.cs",
+      "pattern": "class GetBookByIdEndpoint",
+      "description": "- The handwritten endpoint inherits the generated `GetBookByIdEndpointBase`.\n- The generated `HandleAsync` signature already reflects the contract: `Guid id` in, `Results<Ok<Book>, NotFound>` out.\n- The application supplies the dependency and the behavior; it does not redefine the route or response contract.\n- Use **Go to Definition** on the base class if useful to show the generated surface directly."
+    },
+    {
+      "title": "GET with query parameters and an inline response",
+      "file": "bookstore.yml",
+      "pattern": "operationId: searchBooks",
+      "description": "- `GET /books` adds several query-string parameters.\n- Its `200` response is an inline object with `totalCount` and an array of the reusable `Book` component.\n- The response shape belongs to this operation, so the contract does not need an artificial reusable schema name just to make C# happy.\n- This is where contract-first starts to show shapes that are natural in OpenAPI but less natural to model first in C#."
+    },
+    {
+      "title": "Generated shapes for the search operation",
+      "file": "src/BookStore.Api/Endpoints/Books/SearchBooksEndpoint.cs",
+      "pattern": "Task<Ok<OkResponse>>",
+      "description": "- The generator creates a `Parameters` model for the query string.\n- It also creates an operation-local `OkResponse` type for the inline response schema.\n- The handler simply consumes those generated shapes.\n- The implementation does not have to invent DTOs that then become the accidental source of truth."
+    },
+    {
+      "title": "POST with an inline request body",
+      "file": "bookstore.yml",
+      "pattern": "operationId: createBook",
+      "description": "- `POST /books` defines its JSON request body inline.\n- The response is a `201` carrying the reusable `Book` component.\n- Again, the contract can use the shape that makes sense for the API without first inventing a C# request type.\n- The generator turns that inline body into a type for the implementation to consume."
+    },
+    {
+      "title": "Handwritten POST behavior",
+      "file": "src/BookStore.Api/Endpoints/Books/CreateBookEndpoint.cs",
+      "pattern": "class CreateBookEndpoint",
+      "description": "- The generated base exposes the inline request body as `Request`.\n- The generated result type is `Created<Book>`.\n- The concrete endpoint injects `BookstoreDbContext` and owns the application behavior.\n- The contract determines the HTTP surface; the handwritten code decides what creating a book actually means."
+    },
+    {
+      "title": "Register generated services",
+      "file": "src/BookStore.Api/Program.cs",
+      "pattern": "AddMinimalOpenApi",
+      "description": "- `AddMinimalOpenApi()` picks up the generated service registrations.\n- Endpoint implementations are discovered through the generated infrastructure.\n- There is no per-endpoint DI registration to maintain in `Program.cs`."
+    },
+    {
+      "title": "Map generated endpoints",
+      "file": "src/BookStore.Api/Program.cs",
+      "pattern": "MapMinimalOpenApiEndpoints",
+      "description": "- `MapMinimalOpenApiEndpoints()` maps the routes generated from the authored contract.\n- Notice what is missing: there is no handwritten `MapGet` or `MapPost`.\n- The application never recreates the HTTP surface that already exists in OpenAPI."
+    },
+    {
+      "title": "Expose the authored contract",
+      "file": "src/BookStore.Api/Program.cs",
+      "pattern": "MapOpenApiSchemas",
+      "description": "- `MapOpenApiSchemas()` exposes the authored OpenAPI document at the path configured by `PublishAs`.\n- We are serving the same document that was used as build input.\n- We are not generating a second description from the running application and hoping the two stay aligned."
+    },
+    {
+      "title": "Swagger UI uses the same contract",
+      "file": "src/BookStore.Api/Program.cs",
+      "pattern": "UseSwaggerUI",
+      "description": "- Swagger UI is pointed at the schema descriptors returned by MinimalOpenAPI.\n- Consumers inspect the same authored document that drove source generation.\n- The contract used for implementation and the contract shown as documentation are therefore the same artifact."
+    },
+    {
+      "title": "What the demo proved",
+      "description": "- The API shape existed before the implementation.\n- Contract changes affect the generated C# surface.\n- Handwritten endpoint code does not redefine the HTTP contract.\n- Consumers see the same authored document that drove the build.\n- **The contract is part of the build, not just part of the documentation.**"
+    }
+  ]
+}
