@@ -2,7 +2,7 @@
   "$schema": "https://aka.ms/codetour-schema",
   "title": "Swenug demo — From OpenAPI to Minimal APIs",
   "description": "Guided demo for the Swenug talk: authored OpenAPI, generated surface, handwritten behavior, and application wiring.",
-  "ref": "3272fd2f42f460c3aabbffd7d2abf51d9f98feda",
+  "ref": "ac8328282731243c8204f13fdd3b0f2663837b49",
   "isPrimary": true,
   "steps": [
     {
