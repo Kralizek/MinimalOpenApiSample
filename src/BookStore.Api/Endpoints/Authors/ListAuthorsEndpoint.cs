@@ -8,7 +8,7 @@ namespace BookStore.Endpoints.Authors;
 
 public class ListAuthorsEndpoint(BookstoreDbContext dbContext) : ListAuthorsEndpointBase
 {
-    public override async Task<Ok<string[]>> HandleAsync(CancellationToken cancellationToken)
+    public override async Task<Results<Ok<string[]>, BadRequest>> HandleAsync(CancellationToken cancellationToken)
     {
         var authors = await dbContext.Books
             .AsNoTracking()
