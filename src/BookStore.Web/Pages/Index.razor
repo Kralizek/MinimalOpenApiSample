@@ -8,70 +8,10 @@
 <div class="container py-4">
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0">Bookstore</h1>
-        <button class="btn btn-primary" @onclick="CreateBookAsync" disabled="@isBusy">
+        <button class="btn btn-primary" @onclick="OpenCreateModal" disabled="@isBusy">
             <i class="bi bi-plus-circle me-1"></i> Add Book
         </button>
     </div>
-
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <label class="form-label">Title</label>
-            <input class="form-control" @bind="newBook.Title" />
-        </div>
-        <div class="col-12 col-md-4">
-            <label class="form-label">Author</label>
-            <input class="form-control" @bind="newBook.Author" />
-        </div>
-        <div class="col-12 col-md-2">
-            <label class="form-label">Price</label>
-            <input class="form-control" type="number" min="0" step="0.01" @bind="newBook.Price" />
-        </div>
-        <div class="col-12 col-md-2">
-            <label class="form-label">Category</label>
-            <select class="form-select" @bind="selectedCategory">
-                @foreach (var category in categories)
-                {
-                    <option value="@category">@GetCategoryLabel(category)</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    @if (editableBook is not null)
-    {
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="h5 mb-3">Edit Book</h2>
-                <div class="row g-3">
-                    <div class="col-12 col-md-4">
-                        <label class="form-label">Title</label>
-                        <input class="form-control" @bind="editableBook.Title" />
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label class="form-label">Author</label>
-                        <input class="form-control" @bind="editableBook.Author" />
-                    </div>
-                    <div class="col-12 col-md-2">
-                        <label class="form-label">Price</label>
-                        <input class="form-control" type="number" min="0" step="0.01" @bind="editableBook.Price" />
-                    </div>
-                    <div class="col-12 col-md-2">
-                        <label class="form-label">Category</label>
-                        <select class="form-select" @bind="selectedEditCategory">
-                            @foreach (var category in categories)
-                            {
-                                <option value="@category">@GetCategoryLabel(category)</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-primary" @onclick="UpdateBookAsync" disabled="@isBusy">Save</button>
-                    <button class="btn btn-outline-secondary" @onclick="CancelEdit" disabled="@isBusy">Cancel</button>
-                </div>
-            </div>
-        </div>
-    }
 
     @if (!string.IsNullOrWhiteSpace(errorMessage))
     {
@@ -124,13 +64,61 @@
     </div>
 </div>
 
+@if (isBookModalOpen)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="book-modal-title" @onclick="CloseBookModal" @onkeydown="HandleModalKeydown">
+        <div class="modal-dialog modal-dialog-centered" role="document" @onclick:stopPropagation="true">
+            <div class="modal-content">
+                <form @onsubmit="SaveBookAsync" @onsubmit:preventDefault="true">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5 mb-0" id="book-modal-title">@(editingBookId is null ? "Add Book" : "Edit Book")</h2>
+                        <button type="button" class="btn-close" aria-label="Close" @onclick="CloseBookModal" disabled="@isBusy"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Title</label>
+                                <input class="form-control" @bind="bookForm.Title" @ref="titleInputRef" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Author</label>
+                                <input class="form-control" @bind="bookForm.Author" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">Price</label>
+                                <input class="form-control" type="number" min="0" step="0.01" @bind="bookForm.Price" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" @bind="selectedFormCategory">
+                                    @foreach (var category in categories)
+                                    {
+                                        <option value="@category">@GetCategoryLabel(category)</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" @onclick="CloseBookModal" disabled="@isBusy">Cancel</button>
+                        <button type="submit" class="btn btn-primary" disabled="@isBusy">@(editingBookId is null ? "Create" : "Save")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
 @code {
     private readonly List<BookDto> books = [];
     private readonly Category[] categories = [Category.Fiction, Category.NonFiction, Category.SciFi, Category.Fantasy];
-    private CreateBookRequest newBook = new();
-    private Category selectedCategory = Category.Fiction;
-    private EditableBook? editableBook;
-    private Category selectedEditCategory = Category.Fiction;
+    private EditableBook bookForm = new();
+    private Category selectedFormCategory = Category.Fiction;
+    private Guid? editingBookId;
+    private bool isBookModalOpen;
+    private bool shouldFocusTitle;
+    private ElementReference titleInputRef;
     private bool isBusy;
     private string? errorMessage;
     private string? successMessage;
@@ -138,6 +126,15 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadBooksAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (shouldFocusTitle && isBookModalOpen)
+        {
+            shouldFocusTitle = false;
+            await titleInputRef.FocusAsync();
+        }
     }
 
     private async Task LoadBooksAsync()
@@ -162,68 +159,60 @@
         }
     }
 
-    private async Task CreateBookAsync()
+    private void OpenCreateModal()
     {
-        if (string.IsNullOrWhiteSpace(newBook.Title) || string.IsNullOrWhiteSpace(newBook.Author))
-        {
-            errorMessage = "Title and author are required.";
-            return;
-        }
-
-        isBusy = true;
+        editingBookId = null;
+        bookForm = new EditableBook();
+        selectedFormCategory = Category.Fiction;
+        isBookModalOpen = true;
+        shouldFocusTitle = true;
         errorMessage = null;
         successMessage = null;
-
-        try
-        {
-            newBook.Categories = [selectedCategory];
-            var response = await Http.PostAsJsonAsync("/books", newBook);
-            response.EnsureSuccessStatusCode();
-
-            newBook = new CreateBookRequest();
-            await LoadBooksAsync();
-            successMessage = "Book created.";
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Could not create book: {ex.Message}";
-        }
-        finally
-        {
-            isBusy = false;
-        }
     }
 
     private void BeginEdit(BookDto book)
     {
-        editableBook = new EditableBook
+        editingBookId = book.Id;
+        bookForm = new EditableBook
         {
-            Id = book.Id,
             Title = book.Title,
             Author = book.Author,
             Price = book.Price,
             Isbn = book.Isbn
         };
 
-        selectedEditCategory = book.Categories?.FirstOrDefault() ?? Category.Fiction;
+        selectedFormCategory = book.Categories?.FirstOrDefault() ?? Category.Fiction;
+        isBookModalOpen = true;
+        shouldFocusTitle = true;
         errorMessage = null;
         successMessage = null;
     }
 
-    private void CancelEdit()
+    private void CloseBookModal()
     {
-        editableBook = null;
-        selectedEditCategory = Category.Fiction;
-    }
-
-    private async Task UpdateBookAsync()
-    {
-        if (editableBook is null)
+        if (isBusy)
         {
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(editableBook.Title) || string.IsNullOrWhiteSpace(editableBook.Author))
+        isBookModalOpen = false;
+        editingBookId = null;
+        selectedFormCategory = Category.Fiction;
+        bookForm = new EditableBook();
+        shouldFocusTitle = false;
+    }
+
+    private void HandleModalKeydown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            CloseBookModal();
+        }
+    }
+
+    private async Task SaveBookAsync()
+    {
+        if (string.IsNullOrWhiteSpace(bookForm.Title) || string.IsNullOrWhiteSpace(bookForm.Author))
         {
             errorMessage = "Title and author are required.";
             return;
@@ -235,26 +224,45 @@
 
         try
         {
-            var request = new UpdateBookRequest
+            if (editingBookId is null)
             {
-                Title = editableBook.Title,
-                Author = editableBook.Author,
-                Price = editableBook.Price,
-                Isbn = editableBook.Isbn,
-                Categories = [selectedEditCategory]
-            };
+                var createRequest = new CreateBookRequest
+                {
+                    Title = bookForm.Title,
+                    Author = bookForm.Author,
+                    Price = bookForm.Price,
+                    Isbn = bookForm.Isbn,
+                    Categories = [selectedFormCategory]
+                };
 
-            var response = await Http.PutAsJsonAsync($"/books/{editableBook.Id}", request);
-            response.EnsureSuccessStatusCode();
+                var createResponse = await Http.PostAsJsonAsync("/books", createRequest);
+                createResponse.EnsureSuccessStatusCode();
+                await LoadBooksAsync();
+                successMessage = "Book created.";
+            }
+            else
+            {
+                var updateRequest = new UpdateBookRequest
+                {
+                    Title = bookForm.Title,
+                    Author = bookForm.Author,
+                    Price = bookForm.Price,
+                    Isbn = bookForm.Isbn,
+                    Categories = [selectedFormCategory]
+                };
 
-            editableBook = null;
-            selectedEditCategory = Category.Fiction;
-            await LoadBooksAsync();
-            successMessage = "Book updated.";
+                var updateResponse = await Http.PutAsJsonAsync($"/books/{editingBookId.Value}", updateRequest);
+                updateResponse.EnsureSuccessStatusCode();
+                await LoadBooksAsync();
+                successMessage = "Book updated.";
+            }
+            CloseBookModal();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Could not update book: {ex.Message}";
+            errorMessage = editingBookId is null
+                ? $"Could not create book: {ex.Message}"
+                : $"Could not update book: {ex.Message}";
         }
         finally
         {
@@ -273,10 +281,9 @@
             var response = await Http.DeleteAsync($"/books/{id}");
             response.EnsureSuccessStatusCode();
 
-            if (editableBook?.Id == id)
+            if (editingBookId == id)
             {
-                editableBook = null;
-                selectedEditCategory = Category.Fiction;
+                CloseBookModal();
             }
 
             await LoadBooksAsync();
@@ -294,8 +301,6 @@
 
     private sealed class EditableBook
     {
-        public Guid Id { get; init; }
-
         public string Title { get; set; } = string.Empty;
 
         public string Author { get; set; } = string.Empty;
