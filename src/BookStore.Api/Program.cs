@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMinimalOpenApi();
 
+builder.AddServiceDefaults();
+
 var dataDirectory = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", ".data"));
 Directory.CreateDirectory(dataDirectory);
 
@@ -35,5 +37,7 @@ app.UseSwaggerUI(options =>
         options.SwaggerEndpoint(schema.PublicPath, schema.FullName);
     }
 });
+
+app.MapDefaultEndpoints();
 
 app.Run();
