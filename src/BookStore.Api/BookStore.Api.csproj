@@ -18,4 +18,8 @@
     <OpenApi Include="../../bookstore.yml" PublishAs="/schemas/openapi.yaml" DisplayName="BookStore API" DisplayVersion="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookStore.ServiceDefaults\BookStore.ServiceDefaults.csproj" />
+  </ItemGroup>
+
 </Project>
