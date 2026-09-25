@@ -8,7 +8,7 @@ namespace BookStore.Endpoints.Books;
 
 public class SearchBooksEndpoint(BookstoreDbContext dbContext) : SearchBooksEndpointBase
 {
-    public override async Task<Ok<OkResponse>> HandleAsync(Parameters parameters, CancellationToken cancellationToken)
+    public override async Task<Results<Ok<OkResponse>, BadRequest>> HandleAsync(Parameters parameters, CancellationToken cancellationToken)
     {
         var query = dbContext.Books.AsNoTracking().AsQueryable();
 

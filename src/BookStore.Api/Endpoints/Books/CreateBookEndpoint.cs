@@ -9,7 +9,7 @@ namespace BookStore.Endpoints.Books;
 
 public class CreateBookEndpoint(BookstoreDbContext dbContext) : CreateBookEndpointBase
 {
-    public override async Task<Created<Book>> HandleAsync(Request request, CancellationToken cancellationToken)
+    public override async Task<Results<Created<Book>, BadRequest>> HandleAsync(Request request, CancellationToken cancellationToken)
     {
         var book = new Book
         {

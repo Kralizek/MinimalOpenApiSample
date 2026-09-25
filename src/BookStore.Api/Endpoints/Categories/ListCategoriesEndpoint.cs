@@ -7,7 +7,7 @@ namespace BookStore.Endpoints.Categories;
 
 public class ListCategoriesEndpoint : ListCategoriesEndpointBase
 {
-    public override async Task<Ok<Category[]>> HandleAsync(CancellationToken cancellationToken)
+    public override async Task<Results<Ok<Category[]>, BadRequest>> HandleAsync(CancellationToken cancellationToken)
     {
         return TypedResults.Ok<Category[]>([
             Category.Fantasy,
