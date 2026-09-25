@@ -48,7 +48,7 @@
     {
       "title": "Generated shapes for the search operation",
       "file": "src/BookStore.Api/Endpoints/Books/SearchBooksEndpoint.cs",
-      "pattern": "Task<Ok<OkResponse>>",
+      "pattern": "Task<Results<Ok<OkResponse>, BadRequest>>",
       "description": "- The generator creates a `Parameters` model for the query string.\n- It also creates an operation-local `OkResponse` type for the inline response schema.\n- The handler simply consumes those generated shapes.\n- The implementation does not have to invent DTOs that then become the accidental source of truth."
     },
     {
